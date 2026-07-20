@@ -4,6 +4,7 @@ import "./globals.css";
 import Cursor from "@/components/Cursor";
 import GrainOverlay from "@/components/GrainOverlay";
 import SmoothScroll from "@/components/SmoothScroll";
+import MouseTracker from "@/components/MouseTracker"; // Import the high-performance tracker wrapper
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -41,6 +42,9 @@ export default function RootLayout({
       className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased custom-cursor-active`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
+        {/* Injects raw document properties to sync Hero and Cursor instantly */}
+        <MouseTracker /> 
+        
         <SmoothScroll />
         <GrainOverlay />
         <Cursor />

@@ -33,6 +33,11 @@ const panels = [
     num: "05",
     label: "Space to think before we design.",
   },
+  {
+    src: "/img/studio-interior.jpg",
+    num: "06",
+    label: "Natural light, kept for the long meetings.",
+  },
 ];
 
 export default function Gallery() {

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitReveal from "@/components/SplitReveal";
+import ParallaxImage from "@/components/ParallaxImage";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -104,7 +105,15 @@ export default function Shape() {
       id="approach"
       className="relative h-screen w-full overflow-hidden bg-paper py-16 text-ink select-none"
     >
-      <div className="flex h-full w-full flex-col justify-between">
+      <ParallaxImage
+        src="/img/work-visual-branding.jpg"
+        mask
+        maskColorClassName="bg-ink"
+        speed={0.2}
+        className="pointer-events-none absolute -right-[5%] -top-[10%] z-0 h-[50%] w-[35%] opacity-[0.07]"
+      />
+
+      <div className="relative z-10 flex h-full w-full flex-col justify-between">
         {/* Editorial Header Section */}
         <div className="mx-auto w-full max-w-[1240px] px-6 md:px-10">
           <div className="flex flex-col items-start justify-between gap-6 border-b border-ink/10 pb-8 md:flex-row md:items-end">

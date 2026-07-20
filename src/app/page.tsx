@@ -4,6 +4,7 @@ import Clients from "@/components/Clients";
 import Philosophy from "@/components/Philosophy";
 import Shape from "@/components/Shape";
 import Visual from "@/components/Visual";
+import Work from "@/components/Work";
 import Gallery from "@/components/Gallery";
 import Testimonial from "@/components/Testimonial";
 import ProcessSection from "@/components/Process";
@@ -15,28 +16,33 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="flex-1">
-        <Hero />
-        <Clients />
-        <Philosophy />
-        <Shape />
-        <Visual
-          src="/download.png"
-          eyebrow="Systems at scale"
-          heading="One system. Every touchpoint, unmistakably you."
-        />
-        <Gallery />
-        <Testimonial />
-        <ProcessSection />
-        <Visual
-          src="/videoframe_10387.png"
-          eyebrow="Built to last"
-          heading="Designed for the long view, not the next trend cycle."
-        />
-        <FAQ />
-        <CTA />
-      </main>
-      <Footer />
+      <div id="smooth-wrapper">
+        <div id="smooth-content">
+          <main className="flex-1">
+            <Hero />
+            <Clients />
+            <Philosophy />
+            <Shape />
+            <Visual
+              src="/download.png"
+              eyebrow="Systems at scale"
+              heading="One system. Every touchpoint, unmistakably you."
+            />
+            <Work />
+            <Gallery />
+            <Testimonial />
+            <ProcessSection />
+            <Visual
+              src="/videoframe_10387.png"
+              eyebrow="Built to last"
+              heading="Designed for the long view, not the next trend cycle."
+            />
+            <FAQ />
+            <CTA />
+          </main>
+          <Footer />
+        </div>
+      </div>
     </>
   );
 }

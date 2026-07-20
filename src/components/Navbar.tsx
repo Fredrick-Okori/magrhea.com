@@ -6,6 +6,7 @@ import Magnetic from "@/components/Magnetic";
 import { useScramble } from "@/lib/useScramble";
 
 const links = [
+  { label: "Work", href: "#work" },
   { label: "Approach", href: "#approach" },
   { label: "Process", href: "#process" },
 ];
@@ -32,12 +33,12 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50 px-6 py-6 md:px-10 md:py-7">
-        <div className="flex items-center justify-between text-ink">
+        <div className="flex items-center justify-between text-paper">
           {/* Main Logo Mark */}
           <a
             href="#top"
             data-cursor-hover
-            className="font-display text-lg font-medium tracking-tight text-ink"
+            className="font-display text-lg font-medium tracking-tight text-paper"
           >
             MAGRHEA<span>®</span>
           </a>

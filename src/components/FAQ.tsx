@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import KineticHeading from "@/components/KineticHeading";
 
 const faqs = [
   {
@@ -32,15 +33,11 @@ export default function FAQ() {
   return (
     <section className="border-b border-ink/10 bg-paper px-6 py-[150px] text-ink md:px-10">
       <div className="mx-auto max-w-[880px]">
-        <motion.h2
-          initial={{ opacity: 0, y: 26 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10%" }}
-          transition={{ duration: 0.9, ease: [0.19, 1, 0.22, 1] }}
+        <KineticHeading
           className="font-display mb-16 text-[clamp(32px,4.6vw,54px)] font-medium leading-[1.05]"
         >
           Questions, answered plainly.
-        </motion.h2>
+        </KineticHeading>
 
         <div className="flex flex-col">
           {faqs.map((item, i) => {
