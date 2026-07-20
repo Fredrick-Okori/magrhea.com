@@ -45,47 +45,89 @@ export default function Shape() {
     const ctx = gsap.context(() => {
       const calculateScrollWidth = () => track.scrollWidth - window.innerWidth;
 
-      // Primary Pinning and Slide Translation Timeline
+      // 1. Primary Master Timeline setup
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: container,
           pin: true,
-          scrub: 1,
+          scrub: 0.8, // Slightly tighter scrub factor for responsive tactile feedback
           start: "top top",
           end: () => `+=${track.scrollWidth}`,
           invalidateOnRefresh: true,
         },
       });
 
-      // Animate the absolute horizontal container offset
+      // Slide translation
       tl.to(track, {
         x: () => -calculateScrollWidth(),
         ease: "none",
       });
 
-      // Animate card items inner details individually to establish parallax depth
+      // 2. Premium Effect: Kinetic Scroll Skew Interception
+      let proxy = { skew: 0 };
+      const skewSetter = gsap.quickSetter(track, "skewX", "deg");
+      const clamp = gsap.utils.clamp(-8, 8); // Keeps the lean elegant without clipping bounds
+
+      ScrollTrigger.create({
+        trigger: container,
+        start: "top top",
+        end: () => `+=${track.scrollWidth}`,
+        onUpdate: (self) => {
+          const skew = clamp(self.getVelocity() / -250);
+          // Only update if skew changes to prevent setting properties unnecessarily
+          if (Math.abs(skew) > Math.abs(proxy.skew)) {
+            proxy.skew = skew;
+            gsap.to(proxy, {
+              skew: 0,
+              duration: 0.6,
+              ease: "power2.out",
+              overwrite: "auto",
+              onUpdate: () => skewSetter(proxy.skew),
+            });
+          }
+        },
+      });
+
+      // 3. Premium Effect: Fluid Parallax Counter-Pull & 3D Depth
       const cardsArray = gsap.utils.toArray<HTMLElement>(".gsap-card");
       
       cardsArray.forEach((card) => {
         const title = card.querySelector(".card-title");
         const body = card.querySelector(".card-body");
+        const num = card.querySelector(".card-num");
 
-        // Safely filter out null elements before passing to GSAP
-        const animationTargets = [title, body].filter(
-          (el): el is HTMLElement => el !== null
-        );
-
-        if (animationTargets.length > 0) {
+        if (title && body) {
+          // Counter-pull child items to create deep multi-layered parallax
           gsap.fromTo(
-            animationTargets,
-            { x: 30, opacity: 0.8 },
+            [title, body],
+            { x: 45, opacity: 0.6 },
             {
-              x: -30,
+              x: -45,
               opacity: 1,
+              stagger: 0.05,
+              ease: "power1.out",
+              scrollTrigger: {
+                trigger: card,
+                containerAnimation: tl,
+                start: "left right",
+                end: "right left",
+                scrub: true,
+              },
+            }
+          );
+        }
+
+        if (num) {
+          // Subtle individual parallax shift for structural markers
+          gsap.fromTo(
+            num,
+            { x: 20 },
+            {
+              x: -20,
               ease: "none",
               scrollTrigger: {
                 trigger: card,
-                containerAnimation: tl, // Fixed: Pass the master timeline instance directly
+                containerAnimation: tl,
                 start: "left right",
                 end: "right left",
                 scrub: true,
@@ -120,7 +162,7 @@ export default function Shape() {
             <SplitReveal
               as="h2"
               type="words"
-              className="font-display max-w-[650px] text-[clamp(32px,4.5vw,56px)] font-bold leading-[1.02] tracking-tight"
+              className="font-display max-w-[650px] text-[clamp(36px,4.5vw,56px)] font-bold leading-[1.02] tracking-tight"
             >
               What we shape when a brand comes to us.
             </SplitReveal>
@@ -141,7 +183,7 @@ export default function Shape() {
             {cards.map((card) => (
               <div
                 key={card.mark}
-                className="gsap-card group relative flex h-[420px] w-[320px] shrink-0 flex-col justify-between border border-ink/10 bg-paper/50 p-8 backdrop-blur-[2px] transition-all duration-500 hover:border-ink/30 hover:bg-ink/[0.01] md:w-[400px] md:p-10"
+                className="gsap-card group relative flex h-[440px] w-[320px] shrink-0 flex-col justify-between border border-ink/10 bg-paper/50 p-8 backdrop-blur-[2px] transition-all duration-500 hover:border-ink/30 hover:bg-ink/[0.01] md:w-[420px] md:p-10"
               >
                 {/* Background Progress Highlight Accent Line */}
                 <div className="absolute top-0 left-0 h-[2px] w-0 bg-ink transition-all duration-700 ease-out group-hover:w-full" />
@@ -150,16 +192,16 @@ export default function Shape() {
                   <span className="font-mono text-xs font-semibold tracking-[0.2em] text-ink/40 transition-colors duration-300 group-hover:text-ink">
                     {card.mark}
                   </span>
-                  <span className="font-mono text-sm font-light text-ink/20 transition-colors duration-300 group-hover:text-ink/40">
+                  <span className="card-num font-mono text-sm font-light text-ink/20 transition-colors duration-300 group-hover:text-ink/40 will-change-transform">
                     {card.num}
                   </span>
                 </div>
 
-                <div>
-                  <h3 className="card-title font-display text-2xl font-medium tracking-tight text-ink md:text-3xl">
+                <div className="overflow-hidden py-2">
+                  <h3 className="card-title font-display text-2xl font-medium tracking-tight text-ink md:text-3xl will-change-transform">
                     {card.title}
                   </h3>
-                  <p className="card-body mt-4 font-sans text-[14.5px] leading-[1.6] text-ink/60 antialiased transition-colors duration-500 group-hover:text-ink/80">
+                  <p className="card-body mt-4 font-sans text-[14.5px] leading-[1.6] text-ink/60 antialiased transition-colors duration-500 group-hover:text-ink/80 will-change-transform">
                     {card.body}
                   </p>
                 </div>

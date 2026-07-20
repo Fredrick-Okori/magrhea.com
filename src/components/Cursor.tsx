@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, AnimatePresence, useTransform } from "framer-motion";
 
 function subscribe(callback: () => void) {
   const mq = window.matchMedia("(pointer: fine)");
@@ -31,13 +31,31 @@ export default function Cursor() {
   const mouseX = useMotionValue(-300);
   const mouseY = useMotionValue(-300);
 
-  // IDENTICAL MATCHED PHYSICS REGISTER
-  const springConfig = { stiffness: 1200, damping: 55, mass: 0.05 };
-  const trailX = useSpring(mouseX, springConfig);
-  const trailY = useSpring(mouseY, springConfig);
+  const coreConfig = { stiffness: 1400, damping: 60, mass: 0.03 };
+  const coreX = useSpring(mouseX, coreConfig);
+  const coreY = useSpring(mouseY, coreConfig);
 
   const speedX = useMotionValue(0);
   const textRotate = useSpring(speedX, { stiffness: 600, damping: 30 });
+
+  const targetScaleValue = useMotionValue(1);
+  const scaleSpring = useSpring(targetScaleValue, {
+    stiffness: 100,
+    damping: 25,
+    mass: 0.5,
+  });
+
+  const coreScale = useTransform(scaleSpring, [1, 2, 3], [1, 3.5, 5.0]);
+
+  useEffect(() => {
+    if (cursorState.type === "text") {
+      targetScaleValue.set(3);
+    } else if (cursorState.type === "hover") {
+      targetScaleValue.set(2);
+    } else {
+      targetScaleValue.set(1);
+    }
+  }, [cursorState.type, targetScaleValue]);
 
   useEffect(() => {
     if (!fine) return;
@@ -89,43 +107,33 @@ export default function Cursor() {
 
   if (!fine || !cursorState.visible) return null;
 
-  const isHovered = cursorState.type === "hover";
-  const isText = cursorState.type === "text";
-  const targetScale = isText ? 2.25 : isHovered ? 1.5 : 1;
-
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[100] flex items-center justify-center rounded-full will-change-transform select-none w-20 h-20
-        bg-[radial-gradient(110%_110%_at_50%_0%,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.03)_70%,rgba(255,255,255,0)_100%)]
-        dark:bg-[radial-gradient(110%_110%_at_50%_0%,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.01)_70%,rgba(255,255,255,0)_100%)]
-        backdrop-blur-[24px]
-        border border-white/40 dark:border-white/20
-        shadow-[inset_0_1.5px_2px_0_rgba(255,255,255,0.4),
-                inset_0_-1.5px_2px_0_rgba(0,0,0,0.15),
-                0_16px_32px_-4px_rgba(0,0,0,0.12),
-                0_32px_64px_-12px_rgba(0,0,0,0.18)]"
+      className="pointer-events-none fixed left-0 top-0 z-[100] flex items-center justify-center rounded-full will-change-transform select-none w-6 h-6
+        bg-[radial-gradient(100%_100%_at_50%_0%,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.05)_80%)]
+        dark:bg-[radial-gradient(100%_100%_at_50%_0%,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.01)_80%)]
+        backdrop-blur-[8px]
+        border border-white/50 dark:border-white/20
+        shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_8px_16px_rgba(0,0,0,0.08)]"
       style={{
-        x: trailX,
-        y: trailY,
+        x: coreX,
+        y: coreY,
+        scale: coreScale,
         rotate: textRotate,
         translateX: "-50%",
         translateY: "-50%",
         transformStyle: "preserve-3d",
       }}
-      animate={{ scale: targetScale }}
-      transition={{ type: "spring", ...springConfig }}
     >
       <AnimatePresence mode="wait">
-        {isText && cursorState.text && (
+        {cursorState.type === "text" && cursorState.text && (
           <motion.span
-            initial={{ opacity: 0, scale: 0.75, filter: "blur(6px)" }}
-            animate={{ opacity: 1, scale: 0.45, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 0.75, filter: "blur(6px)" }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="whitespace-nowrap font-mono text-xs font-bold uppercase tracking-[0.22em] text-ink/90 select-none antialiased
-                       drop-shadow-[0_1.5px_1px_rgba(255,255,255,0.5)]
-                       dark:drop-shadow-[0_1.5px_1px_rgba(0,0,0,0.4)]"
+            initial={{ opacity: 0, scale: 0.6, filter: "blur(4px)" }}
+            animate={{ opacity: 1, scale: 0.18, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 0.6, filter: "blur(4px)" }}
+            transition={{ duration: 0.12 }}
+            className="whitespace-nowrap font-mono text-[42px] font-bold uppercase tracking-[0.25em] text-ink select-none antialiased"
           >
             {cursorState.text}
           </motion.span>

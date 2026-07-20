@@ -25,7 +25,7 @@ export default function ProcessSection() {
   return (
     <section
       id="process"
-      className="border-b border-ink/10 bg-paper px-6 py-[150px] text-ink md:px-10"
+      className="scroll-section border-b border-ink/10 bg-paper px-6 py-[150px] text-ink md:px-10"
     >
       <div className="mx-auto max-w-[1240px]">
         <div className="mb-20 max-w-[600px]">

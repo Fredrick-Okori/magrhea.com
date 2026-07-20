@@ -60,7 +60,7 @@ export default function Clients() {
   }, []);
 
   return (
-    <section className="overflow-hidden border-b border-ink/10 bg-paper py-16 text-ink">
+    <section className="scroll-section overflow-hidden border-b border-ink/10 bg-paper py-16 text-ink">
       <div className="mx-auto max-w-[1240px] px-6 md:px-10">
         <motion.p
           initial={{ opacity: 0 }}

@@ -6,7 +6,7 @@ import ParallaxImage from "@/components/ParallaxImage";
 
 export default function Philosophy() {
   return (
-    <section className="relative overflow-hidden border-b border-ink/10 bg-paper px-6 py-[170px] text-ink md:px-10 md:py-[150px]">
+    <section className="scroll-section relative overflow-hidden border-b border-ink/10 bg-paper px-6 py-[170px] text-ink md:px-10 md:py-[150px]">
       <ParallaxImage
         src="/accent-loop-large.png"
         mask

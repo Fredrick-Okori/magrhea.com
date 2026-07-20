@@ -5,7 +5,7 @@ import ParallaxImage from "@/components/ParallaxImage";
 
 export default function Testimonial() {
   return (
-    <section className="relative overflow-hidden bg-ink px-6 py-[150px] text-paper md:px-10">
+    <section className="scroll-section relative overflow-hidden bg-ink px-6 py-[150px] text-paper md:px-10">
       <ParallaxImage
         src="/accent-loop-wide.png"
         speed={-0.25}

@@ -11,6 +11,8 @@ import ProcessSection from "@/components/Process";
 import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import ShowcaseSection from "@/components/ShowCaseSection";
+import StartProjectSection from "@/components/StartProjectSection";
 
 export default function Home() {
   return (
@@ -20,25 +22,18 @@ export default function Home() {
         <div id="smooth-content">
           <main className="flex-1">
             <Hero />
-            <Clients />
+            {/* <Clients /> */}
             <Philosophy />
+            <ShowcaseSection/>
             <Shape />
-            <Visual
-              src="/download.png"
-              eyebrow="Systems at scale"
-              heading="One system. Every touchpoint, unmistakably you."
-            />
+         
             <Work />
-            <Gallery />
-            <Testimonial />
+            {/* <Gallery />
+            <Testimonial /> */}
             <ProcessSection />
-            <Visual
-              src="/videoframe_10387.png"
-              eyebrow="Built to last"
-              heading="Designed for the long view, not the next trend cycle."
-            />
+
             <FAQ />
-            <CTA />
+            <StartProjectSection/>
           </main>
           <Footer />
         </div>

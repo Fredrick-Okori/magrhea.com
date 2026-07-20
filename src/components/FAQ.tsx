@@ -31,7 +31,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="border-b border-ink/10 bg-paper px-6 py-[150px] text-ink md:px-10">
+    <section className="scroll-section border-b border-ink/10 bg-paper px-6 py-[150px] text-ink md:px-10">
       <div className="mx-auto max-w-[880px]">
         <KineticHeading
           className="font-display mb-16 text-[clamp(32px,4.6vw,54px)] font-medium leading-[1.05]"

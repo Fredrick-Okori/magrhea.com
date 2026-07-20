@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 const offices = [
   { city: "Bristol", tz: "Europe/London" },
@@ -41,8 +42,36 @@ function OfficeRow({ city, tz }: { city: string; tz: string }) {
 }
 
 export default function Footer() {
+  const containerRef = useRef<HTMLElement>(null);
+
+  // 1. Track the exact scroll boundary progression of the footer frame
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end end"],
+  });
+
+  // 2. Map the scroll progress to a clipping percentage (revealing from the top down)
+  const rawClip = useTransform(scrollYProgress, [0, 0.95], [0, 100]);
+  
+  // 3. Smooth the path with a slightly dampened spring for liquid physical feedback
+  const smoothClip = useSpring(rawClip, {
+    stiffness: 140,
+    damping: 22,
+    mass: 0.6,
+  });
+
+  // 4. Interpolate the numerical path into a valid CSS polygon rule
+  const clipPath = useTransform(
+    smoothClip,
+    (value) => `polygon(0% 0%, 100% 0%, 100% ${value}%, 0% ${value}%)`
+  );
+
   return (
-    <footer className="bg-ink px-6 pb-8 pt-16 text-paper md:px-10">
+    <motion.footer
+      ref={containerRef}
+      style={{ clipPath }}
+      className="bg-ink px-6 pb-8 pt-16 text-paper md:px-10 will-change-[clip-path]"
+    >
       <div className="grid grid-cols-1 gap-12 border-t border-paper/10 pt-14 md:grid-cols-3">
         <div>
           <span className="font-display text-2xl font-medium tracking-tight">
@@ -90,6 +119,6 @@ export default function Footer() {
           Back to top ↑
         </a>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

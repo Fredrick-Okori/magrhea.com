@@ -49,7 +49,7 @@ export default function Visual({
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-[80vh] items-center justify-center overflow-hidden bg-ink text-paper"
+      className="scroll-section relative flex h-[80vh] items-center justify-center overflow-hidden bg-ink text-paper"
     >
       <div ref={imgRef} className="absolute inset-0">
         <Image src={src} alt="" fill className="object-cover" />
