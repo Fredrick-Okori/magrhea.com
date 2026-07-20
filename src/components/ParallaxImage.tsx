@@ -13,12 +13,14 @@ export default function ParallaxImage({
   speed = 0.25,
   mask = false,
   maskColorClassName = "bg-ink",
+  sizes = "50vw",
 }: {
   src: string;
   className?: string;
   speed?: number;
   mask?: boolean;
   maskColorClassName?: string;
+  sizes?: string;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -62,7 +64,7 @@ export default function ParallaxImage({
             }}
           />
         ) : (
-          <Image src={src} alt="" fill className="object-contain" />
+          <Image src={src} alt="" fill sizes={sizes} className="object-contain" />
         )}
       </div>
     </div>

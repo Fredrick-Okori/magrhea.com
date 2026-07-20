@@ -209,7 +209,6 @@ export default function Work() {
                   fill
                   sizes="(max-width: 768px) 55vw, 16vw"
                   className="object-cover"
-                  priority
                 />
               </div>
 

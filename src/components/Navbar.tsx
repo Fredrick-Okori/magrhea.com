@@ -19,7 +19,7 @@ function NavLink({ label, href }: { label: string; href: string }) {
       href={href}
       data-cursor-hover
       onMouseEnter={scramble}
-      className="group relative pb-1 text-ink transition-opacity hover:opacity-100"
+      className="group relative pb-1 text-paper transition-opacity hover:opacity-100"
     >
       {display}
       <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100" />
@@ -126,7 +126,7 @@ export default function Navbar() {
 
             <div className="flex flex-col gap-1 font-mono text-xs uppercase tracking-[0.05em] text-paper/60 md:flex-row md:items-center md:justify-between">
               <span>hello@magrhea.studio</span>
-              <span>Bristol — London</span>
+              <span>Addis Ababa, Ethiopia</span>
             </div>
           </motion.div>
         )}

@@ -7,8 +7,9 @@ export default function Testimonial() {
   return (
     <section className="scroll-section relative overflow-hidden bg-ink px-6 py-[150px] text-paper md:px-10">
       <ParallaxImage
-        src="/accent-loop-wide.png"
+        src="/img/accent-loop-wide_converted.avif"
         speed={-0.25}
+        sizes="70vw"
         className="pointer-events-none absolute -left-[15%] top-1/2 z-0 h-[60%] w-[70%] -translate-y-1/2 opacity-[0.09]"
       />
 

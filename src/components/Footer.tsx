@@ -3,10 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
-const offices = [
-  { city: "Bristol", tz: "Europe/London" },
-  { city: "London", tz: "Europe/London" },
-];
+const offices = [{ city: "Addis Ababa", tz: "Africa/Addis_Ababa" }];
 
 const socials = ["Instagram", "LinkedIn", "X", "Behance"];
 
@@ -79,13 +76,13 @@ export default function Footer() {
           </span>
           <p className="mt-4 max-w-xs text-sm text-bone">
             An independent studio for brands, digital products and motion.
-            Bristol &amp; London.
+            Addis Ababa, Ethiopia.
           </p>
         </div>
 
         <div>
           <span className="font-mono text-xs uppercase tracking-[0.15em] text-bone">
-            Offices
+            Studio
           </span>
           <div className="mt-4">
             {offices.map((o) => (

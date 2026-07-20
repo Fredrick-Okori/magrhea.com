@@ -18,7 +18,7 @@ export const projects: Project[] = [
     client: "Real estate",
     category: "Digital",
     year: "2025",
-    image: "/img/work-jd-muskoka.jpg",
+    image: "/img/work-jd-muskoka_converted.avif",
   },
   {
     slug: "record-planet",
@@ -26,7 +26,7 @@ export const projects: Project[] = [
     client: "Events & retail",
     category: "Digital",
     year: "2025",
-    image: "/img/work-record-planet.jpg",
+    image: "/img/work-record-planet_converted.avif",
   },
   {
     slug: "z3-data",
@@ -34,7 +34,7 @@ export const projects: Project[] = [
     client: "Sustainability platform",
     category: "Digital",
     year: "2024",
-    image: "/img/work-z3-data.jpg",
+    image: "/img/work-z3-data_converted.avif",
   },
   {
     slug: "snowdrop-services",
@@ -42,7 +42,7 @@ export const projects: Project[] = [
     client: "Commercial cleaning",
     category: "Digital",
     year: "2024",
-    image: "/img/work-snowdrop.jpg",
+    image: "/img/work-snowdrop_converted.avif",
   },
   {
     slug: "prosite-plan-africa",
@@ -50,7 +50,7 @@ export const projects: Project[] = [
     client: "Architecture & project management",
     category: "Branding",
     year: "2024",
-    image: "/img/work-prosite-plan.jpg",
+    image: "/img/work-prosite-plan_converted.avif",
   },
   {
     slug: "digital-two-way",
@@ -58,7 +58,7 @@ export const projects: Project[] = [
     client: "Telecommunications",
     category: "Branding",
     year: "2023",
-    image: "/img/work-digital-twoway.jpg",
+    image: "/img/work-digital-twoway_converted.avif",
   },
   {
     slug: "mogharebi",
@@ -66,6 +66,6 @@ export const projects: Project[] = [
     client: "Property development",
     category: "Branding",
     year: "2023",
-    image: "/img/work-mogharebi.jpg",
+    image: "/img/work-mogharebi_converted.avif",
   },
 ];

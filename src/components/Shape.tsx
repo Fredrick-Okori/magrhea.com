@@ -148,7 +148,7 @@ export default function Shape() {
       className="relative h-screen w-full overflow-hidden bg-paper py-16 text-ink select-none"
     >
       <ParallaxImage
-        src="/img/work-visual-branding.jpg"
+        src="/img/work-visual-branding_converted.avif"
         mask
         maskColorClassName="bg-ink"
         speed={0.2}

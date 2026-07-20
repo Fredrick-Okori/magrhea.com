@@ -8,7 +8,7 @@ export default function Philosophy() {
   return (
     <section className="scroll-section relative overflow-hidden border-b border-ink/10 bg-paper px-6 py-[170px] text-ink md:px-10 md:py-[150px]">
       <ParallaxImage
-        src="/accent-loop-large.png"
+        src="/img/accent-loop-large_converted.avif"
         mask
         maskColorClassName="bg-ink"
         speed={0.3}

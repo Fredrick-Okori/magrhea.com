@@ -9,32 +9,32 @@ gsap.registerPlugin(ScrollTrigger);
 
 const panels = [
   {
-    src: "/img/studio-corridor.jpg",
+    src: "/img/studio-corridor_converted.avif",
     num: "01",
     label: "Where the work gets reviewed, line by line.",
   },
   {
-    src: "/img/studio-texture.jpg",
+    src: "/img/studio-texture_converted.avif",
     num: "02",
     label: "Every system starts as paper.",
   },
   {
-    src: "/img/studio-dark.jpg",
+    src: "/img/studio-dark_converted.avif",
     num: "03",
     label: "Some ideas only work in the dark.",
   },
   {
-    src: "/img/studio-desk.jpg",
+    src: "/img/studio-desk_converted.avif",
     num: "04",
     label: "The studio, on a Tuesday morning.",
   },
   {
-    src: "/img/studio-room.jpg",
+    src: "/img/studio-room_converted.avif",
     num: "05",
     label: "Space to think before we design.",
   },
   {
-    src: "/img/studio-interior.jpg",
+    src: "/img/studio-interior_converted.avif",
     num: "06",
     label: "Natural light, kept for the long meetings.",
   },
@@ -96,7 +96,7 @@ export default function Gallery() {
               src={panel.src}
               alt=""
               fill
-              sizes="85vw"
+              sizes="(max-width: 768px) 85vw, 42vw"
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
