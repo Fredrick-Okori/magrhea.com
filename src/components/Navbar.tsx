@@ -19,10 +19,10 @@ function NavLink({ label, href }: { label: string; href: string }) {
       href={href}
       data-cursor-hover
       onMouseEnter={scramble}
-      className="group relative pb-1 text-paper transition-opacity hover:opacity-100"
+      className="group relative pb-1 text-[#2B1B17] transition-opacity hover:opacity-80"
     >
       {display}
-      <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100" />
+      <span className="absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-[#2B1B17] transition-transform duration-300 ease-out group-hover:scale-x-100" />
     </a>
   );
 }
@@ -33,12 +33,12 @@ export default function Navbar() {
   return (
     <>
       <header className="fixed inset-x-0 top-0 z-50 px-6 py-6 md:px-10 md:py-7">
-        <div className="flex items-center justify-between text-paper">
+        <div className="flex items-center justify-between text-[#2B1B17]">
           {/* Main Logo Mark */}
           <a
             href="#top"
             data-cursor-hover
-            className="font-display text-lg font-medium tracking-tight text-paper"
+            className="font-display text-lg font-medium tracking-tight text-[#2B1B17]"
           >
             MAGRHEA<span>®</span>
           </a>
@@ -51,28 +51,28 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-4">
-            {/* Primary Action Button (bg-ink applied) */}
+            {/* Primary Action Button */}
             <Magnetic strength={0.4}>
               <a
                 href="#contact"
                 data-cursor-hover
-                className="hidden rounded-full bg-ink px-[20px] py-[10px] font-mono text-xs uppercase tracking-[0.06em] text-paper transition-all duration-300 hover:bg-ink/90 sm:inline-block"
+                className="hidden rounded-full bg-[#2B1B17] px-[20px] py-[10px] font-mono text-xs uppercase tracking-[0.06em] text-[#e3ded8] transition-all duration-300 hover:bg-[#1C120F] sm:inline-block"
               >
                 Start a project
               </a>
             </Magnetic>
 
-            {/* Menu Trigger Button (bg-ink applied) */}
+            {/* Menu Trigger Button */}
             <button
               type="button"
               data-cursor-hover
               onClick={() => setOpen(true)}
-              className="flex items-center justify-center h-10 w-10 rounded-full bg-ink text-paper transition-all duration-300 hover:bg-ink/90"
+              className="flex items-center justify-center h-10 w-10 rounded-full bg-[#2B1B17] text-[#e3ded8] transition-all duration-300 hover:bg-[#1C120F]"
               aria-label="Open menu"
             >
               <span className="flex flex-col items-center gap-[4px]">
-                <span className="h-px w-4 bg-paper" />
-                <span className="h-px w-4 bg-paper" />
+                <span className="h-px w-4 bg-[#e3ded8]" />
+                <span className="h-px w-4 bg-[#e3ded8]" />
               </span>
             </button>
           </div>
@@ -87,9 +87,9 @@ export default function Navbar() {
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] as const }}
-            className="fixed inset-0 z-[65] flex flex-col bg-ink px-6 py-6 md:px-10 md:py-8"
+            className="fixed inset-0 z-[65] flex flex-col bg-[#2B1B17] px-6 py-6 md:px-10 md:py-8 text-[#e3ded8]"
           >
-            <div className="flex items-center justify-between text-paper">
+            <div className="flex items-center justify-between">
               <span className="font-display text-lg font-medium tracking-tight">
                 MAGRHEA<span>®</span>
               </span>
@@ -97,7 +97,7 @@ export default function Navbar() {
                 type="button"
                 data-cursor-hover
                 onClick={() => setOpen(false)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-paper/20 text-paper hover:bg-paper/10 transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#e3ded8]/20 text-[#e3ded8] hover:bg-[#e3ded8]/10 transition-colors"
                 aria-label="Close menu"
               >
                 <span className="relative block h-4 w-4">
@@ -117,14 +117,14 @@ export default function Navbar() {
                   initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.15 + i * 0.06, duration: 0.5 }}
-                  className="font-display text-[13vw] leading-[0.95] text-paper transition-colors hover:text-paper/70 md:text-[7vw]"
+                  className="font-display text-[13vw] leading-[0.95] text-[#e3ded8] transition-colors hover:text-[#e3ded8]/70 md:text-[7vw]"
                 >
                   {l.label}
                 </motion.a>
               ))}
             </div>
 
-            <div className="flex flex-col gap-1 font-mono text-xs uppercase tracking-[0.05em] text-paper/60 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-1 font-mono text-xs uppercase tracking-[0.05em] text-[#e3ded8]/60 md:flex-row md:items-center md:justify-between">
               <span>hello@magrhea.studio</span>
               <span>Addis Ababa, Ethiopia</span>
             </div>

@@ -1,337 +1,372 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import {
-  motion,
-  useMotionValue,
-  useMotionValueEvent,
-  useSpring,
-  useTransform,
-  useScroll,
-} from "framer-motion";
-import Magnetic from "@/components/Magnetic";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-      delayChildren: 0.2,
-    },
-  },
-};
+export default function HeroSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-const titleLetterVariants = {
-  hidden: { opacity: 0, y: "40%" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
+  // Wrapper for showing/hiding the cell follower smoothly
+  const liquidWrapperRef = useRef<HTMLDivElement>(null);
 
-const fadeUpVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 1, ease: [0.19, 1, 0.22, 1] as const },
-  },
-};
+  // Cell components
+  const headRef = useRef<HTMLDivElement>(null);
+  const tailSegmentRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const turbulenceRef = useRef<SVGFETurbulenceElement>(null);
 
-export default function Hero() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  
-  // Separate filter controls for independent scaling pipelines
-  const bgTurbRef = useRef<SVGFETurbulenceElement>(null);
-  const bgDispMapRef = useRef<SVGFEDisplacementMapElement>(null);
-  
-  const textTurbRef = useRef<SVGFETurbulenceElement>(null);
-  const textDispMapRef = useRef<SVGFEDisplacementMapElement>(null);
-
-  // --- Dynamic Mouse Coordinate Processing --- //
-  const rawMouseX = useMotionValue(0);
-  const rawMouseY = useMotionValue(0);
-
-  const springConfig = { stiffness: 1200, damping: 55, mass: 0.05 };
-  const smoothMouseX = useSpring(rawMouseX, springConfig);
-  const smoothMouseY = useSpring(rawMouseY, springConfig);
-
-  const rotateX = useTransform(smoothMouseY, [-0.5, 0.5], [6, -6]);
-  const rotateY = useTransform(smoothMouseX, [-0.5, 0.5], [-6, 6]);
-
-  const contentTranslateX = useTransform(smoothMouseX, [-0.5, 0.5], [-12, 12]);
-  const contentTranslateY = useTransform(smoothMouseY, [-0.5, 0.5], [-12, 12]);
-
-  const bgTranslateX = useTransform(smoothMouseX, [-0.5, 0.5], [15, -15]);
-  const bgTranslateY = useTransform(smoothMouseY, [-0.5, 0.5], [15, -15]);
+  // Array to hold active node coordinates for dot grid color calculation
+  const followerNodesRef = useRef<{ x: number; y: number; r: number }[]>([]);
 
   useEffect(() => {
-    const handleTracking = (e: MouseEvent) => {
-      const normalizedX = (e.clientX / window.innerWidth) - 0.5;
-      const normalizedY = (e.clientY / window.innerHeight) - 0.5;
-      
-      rawMouseX.set(normalizedX);
-      rawMouseY.set(normalizedY);
+    if (!containerRef.current || !headRef.current || !liquidWrapperRef.current || !canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const gap = 12;
+    const dotRadius = 1.1;
+
+    let isVisible = false;
+    let visibilityOpacity = 0;
+    let inactivityTimer: NodeJS.Timeout;
+
+    // Smooth head movement towards pointer
+    const headXTo = gsap.quickTo(headRef.current, "x", {
+      duration: 0.35,
+      ease: "power2.out",
+    });
+    const headYTo = gsap.quickTo(headRef.current, "y", {
+      duration: 0.35,
+      ease: "power2.out",
+    });
+
+    let mouseX = -1000;
+    let mouseY = -1000;
+    let lastX = 0;
+    let lastY = 0;
+
+    // Smooth Ease-In
+    const showFollower = () => {
+      if (!isVisible && liquidWrapperRef.current) {
+        isVisible = true;
+        gsap.to(liquidWrapperRef.current, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+
+        gsap.to(
+          { val: visibilityOpacity },
+          {
+            val: 1,
+            duration: 0.5,
+            ease: "power2.out",
+            onUpdate: function () {
+              visibilityOpacity = this.targets()[0].val;
+            },
+          }
+        );
+      }
     };
 
-    window.addEventListener("mousemove", handleTracking, { passive: true });
-    return () => window.removeEventListener("mousemove", handleTracking);
-  }, [rawMouseX, rawMouseY]);
+    // Soft, organic dissipation (fade out)
+    const hideFollower = () => {
+      if (liquidWrapperRef.current) {
+        isVisible = false;
 
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-    rawMouseX.set(0);
-    rawMouseY.set(0);
-  };
+        gsap.to(liquidWrapperRef.current, {
+          opacity: 0,
+          scale: 0.85,
+          duration: 1.4,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
 
-  // --- Lenis Scroll Sync --- //
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-
-  const textScale = useTransform(scrollYProgress, [0, 1], [1, 1.3]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -100]);
-
-  // High-Frequency Liquid FX Wave Loop Animation
-  useEffect(() => {
-    let frame: number;
-    let start = 0;
-    
-    const animate = (now: number) => {
-      if (!start) start = now;
-      const t = (now - start) / 1000;
-
-      // Heavy Liquid configuration parameters for the background layer
-      const bgFx = 0.03 + Math.sin(t * 1.8) * 0.006;
-      const bgFy = 0.06 + Math.cos(t * 1.4) * 0.012;
-      
-      // Fine-grain, fast micro-ripple parameters for text legibility
-      const textFx = 0.01 + Math.sin(t * 2.5) * 0.002;
-      const textFy = 0.02 + Math.cos(t * 2.0) * 0.003;
-      
-      if (bgTurbRef.current) bgTurbRef.current.setAttribute("baseFrequency", `${bgFx} ${bgFy}`);
-      if (textTurbRef.current) textTurbRef.current.setAttribute("baseFrequency", `${textFx} ${textFy}`);
-      
-      frame = requestAnimationFrame(animate);
+        gsap.to(
+          { val: visibilityOpacity },
+          {
+            val: 0,
+            duration: 1.4,
+            ease: "power2.out",
+            onUpdate: function () {
+              visibilityOpacity = this.targets()[0].val;
+            },
+          }
+        );
+      }
     };
-    
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+
+    const tailNodes = Array.from({ length: 7 }, () => ({ x: -1000, y: -1000 }));
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      showFollower();
+
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(hideFollower, 700);
+
+      const rect = containerRef.current.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+
+      headXTo(mouseX);
+      headYTo(mouseY);
+    };
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Dynamic Render Loop
+    let animationFrameId: number;
+    let waveStep = 0;
+    let waterTime = 0;
+    let currentSpeed = 0;
+
+    const render = () => {
+      waveStep += 0.12;
+      waterTime += 0.035;
+
+      const deltaX = mouseX - lastX;
+      const deltaY = mouseY - lastY;
+      const targetSpeed = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+      currentSpeed += (targetSpeed - currentSpeed) * 0.1;
+      const moveAngle = Math.atan2(deltaY, deltaX);
+
+      lastX = mouseX;
+      lastY = mouseY;
+
+      if (headRef.current && currentSpeed > 0.2) {
+        gsap.to(headRef.current, {
+          rotation: (moveAngle * 180) / Math.PI + 90,
+          duration: 0.4,
+          ease: "power2.out",
+          overwrite: "auto",
+        });
+      }
+
+      let prevX = mouseX;
+      let prevY = mouseY;
+
+      // Track active follower nodes for dot canvas calculations
+      const nodesToTrack: { x: number; y: number; r: number }[] = [
+        { x: mouseX, y: mouseY, r: 70 },
+      ];
+
+      tailNodes.forEach((node, idx) => {
+        const segRef = tailSegmentRefs.current[idx];
+        if (!segRef) return;
+
+        const waveFreq = waveStep - idx * 0.35;
+        const waveAmplitude = Math.min(16, 3 + currentSpeed * 0.3) * ((idx + 1) / 7);
+
+        const perpAngle = moveAngle + Math.PI / 2;
+        const waveOffsetX = Math.cos(perpAngle) * Math.sin(waveFreq) * waveAmplitude;
+        const waveOffsetY = Math.sin(perpAngle) * Math.sin(waveFreq) * waveAmplitude;
+
+        node.x += (prevX - node.x) * (0.28 - idx * 0.025);
+        node.y += (prevY - node.y) * (0.28 - idx * 0.025);
+
+        const currX = node.x + waveOffsetX;
+        const currY = node.y + waveOffsetY;
+
+        gsap.set(segRef, {
+          x: currX,
+          y: currY,
+        });
+
+        nodesToTrack.push({ x: currX, y: currY, r: 50 - idx * 4 });
+
+        prevX = node.x;
+        prevY = node.y;
+      });
+
+      followerNodesRef.current = nodesToTrack;
+
+      // Update SVG turbulence for the follower
+      if (turbulenceRef.current) {
+        const freqX = 0.012 + Math.sin(waveStep * 0.15) * 0.004;
+        const freqY = 0.018 + Math.cos(waveStep * 0.15) * 0.004;
+        turbulenceRef.current.setAttribute("baseFrequency", `${freqX} ${freqY}`);
+      }
+
+      // --- Draw Dynamic Wavy Water Canvas Dot Grid ---
+      ctx.clearRect(0, 0, width, height);
+
+      const trackedNodes = followerNodesRef.current;
+      const baseWaveAmplitude = 6.0;
+
+      for (let x = gap / 2; x < width; x += gap) {
+        for (let y = gap / 2; y < height; y += gap) {
+          let extraDistortion = 0;
+          let isOverlapping = false;
+
+          // Check proximity to any node of the follower
+          if (visibilityOpacity > 0.001) {
+            for (let i = 0; i < trackedNodes.length; i++) {
+              const node = trackedNodes[i];
+              const dx = x - node.x;
+              const dy = y - node.y;
+              const distSq = dx * dx + dy * dy;
+              const radiusSq = node.r * node.r;
+
+              if (distSq < radiusSq) {
+                isOverlapping = true;
+                const factor = (1 - Math.sqrt(distSq) / node.r) * visibilityOpacity;
+                extraDistortion = Math.max(extraDistortion, factor);
+              }
+            }
+          }
+
+          // Rolling water surface formula influenced by follower movement
+          const currentAmplitude = baseWaveAmplitude + extraDistortion * 8.0;
+          const angleX = (x + y) * 0.008 + waterTime + extraDistortion * Math.PI;
+          const angleY = (x - y) * 0.008 + waterTime * 1.2;
+
+          const renderX = x + Math.sin(angleX) * currentAmplitude;
+          const renderY = y + Math.cos(angleY) * currentAmplitude;
+
+          ctx.beginPath();
+          ctx.arc(renderX, renderY, dotRadius, 0, Math.PI * 2);
+
+          // Blend color transition based on visibilityOpacity
+          if (isOverlapping && visibilityOpacity > 0.001) {
+            ctx.fillStyle = `rgba(${244 * visibilityOpacity + 43 * (1 - visibilityOpacity)}, ${
+              63 * visibilityOpacity + 27 * (1 - visibilityOpacity)
+            }, ${94 * visibilityOpacity + 23 * (1 - visibilityOpacity)}, 1)`;
+          } else {
+            ctx.fillStyle = "#2B1B17";
+          }
+
+          ctx.fill();
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    const container = containerRef.current;
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseleave", hideFollower);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseleave", hideFollower);
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(inactivityTimer);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
-
-  const [isHovering, setIsHovering] = useState(false);
-  const hoverProgress = useMotionValue(0);
-  const hoverSpring = useSpring(hoverProgress, { stiffness: 100, damping: 25, mass: 0.5 });
-  
-  const bgScale = useTransform(hoverSpring, [0, 1], [1.05, 1.1]);
-
-  useEffect(() => {
-    hoverProgress.set(isHovering ? 1 : 0);
-  }, [isHovering, hoverProgress]);
-
-  useMotionValueEvent(hoverSpring, "change", (v) => {
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    
-    // Dynamic boost for the background remains highly interactive
-    if (bgDispMapRef.current) {
-      bgDispMapRef.current.setAttribute("scale", String(8 + 24 * v));
-    }
-    // Dynamic boost for text layer is severely dampened to prioritize legibility
-    if (textDispMapRef.current) {
-      textDispMapRef.current.setAttribute("scale", String(2 + 4 * v));
-    }
-  });
 
   return (
     <section
-      ref={sectionRef}
-      id="top"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={handleMouseLeave}
-      className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-paper select-none"
-      style={{ perspective: 1200 }}
+      ref={containerRef}
+      className="relative w-full min-h-screen bg-[#e3ded8] text-[#2B1B17] overflow-hidden flex flex-col justify-center items-center p-6 md:p-12 select-none isolate"
     >
-      {/* PIPELINE A: Heavy Background Water Distortion */}
-      <svg className="absolute h-0 w-0 pointer-events-none" aria-hidden="true">
-        <filter id="hero-bg-water-lens" x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence
-            ref={bgTurbRef}
-            type="fractalNoise"
-            baseFrequency="0.03 0.06"
-            numOctaves="2"
-            result="noise"
-          />
-          <feDisplacementMap
-            ref={bgDispMapRef}
-            in="SourceGraphic"
-            in2="noise"
-            scale="8"
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
+      {/* --- SVG Gooey Liquid Merger Filter --- */}
+      <svg className="hidden">
+        <defs>
+          <filter id="gooey-sperm-cell">
+            <feTurbulence
+              ref={turbulenceRef}
+              type="fractalNoise"
+              baseFrequency="0.012 0.018"
+              numOctaves="2"
+              result="noise"
+            />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="25"
+              xChannelSelector="R"
+              yChannelSelector="G"
+              result="displaced"
+            />
+            <feGaussianBlur in="displaced" stdDeviation="12" result="blur" />
+            <feColorMatrix
+              in="blur"
+              type="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -8"
+            />
+          </filter>
+        </defs>
       </svg>
 
-      {/* PIPELINE B: Subtle, Micro-Dampened Typography Distortion */}
-      <svg className="absolute h-0 w-0 pointer-events-none" aria-hidden="true">
-        <filter id="hero-text-water-lens" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence
-            ref={textTurbRef}
-            type="fractalNoise"
-            baseFrequency="0.01 0.02"
-            numOctaves="1" // Reduced octaves for cleaner, smooth text boundaries
-            result="noise"
-          />
-          <feDisplacementMap
-            ref={textDispMapRef}
-            in="SourceGraphic"
-            in2="noise"
-            scale="2" // Dropped starting baseline scale down significantly
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </svg>
-
-      {/* Background Graphic Mesh */}
-      <motion.div
-        className="absolute -inset-10 z-0 will-change-transform"
-        style={{ 
-          filter: "url(#hero-bg-water-lens)", // Links into the heavy warp pipeline
-          scale: bgScale,
-          rotateX,
-          rotateY,
-          x: bgTranslateX,
-          y: bgTranslateY,
-          transformStyle: "preserve-3d"
-        }}
+      {/* --- Sperm Cell Follower Container (z-0) --- */}
+      <div
+        ref={liquidWrapperRef}
+        className="pointer-events-none absolute inset-0 z-0 opacity-0 transform-gpu"
+        style={{ filter: "url(#gooey-sperm-cell)" }}
       >
-        <Image
-          src="/bg.webp"
-          alt=""
-          fill
-          unoptimized
-          priority
-          className="object-cover opacity-95 pointer-events-none"
-        />
-      </motion.div>
-
-      {/* Content Canvas */}
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-24 md:px-10 md:pb-28 will-change-transform"
-        style={{
-          filter: "url(#hero-text-water-lens)", // Intercepts with typography-safe low-frequency warp filter
-          rotateX,
-          rotateY,
-          x: contentTranslateX,
-          y: contentTranslateY,
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <motion.div 
-          variants={fadeUpVariants}
-          className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-paper/60"
-          style={{ transform: "translateZ(30px)" }}
-        >
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ink/40 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-paper" />
-          </span>
-          Creative Studio
-        </motion.div>
-
-        <motion.div
+        {/* Big Rounded Cell Head */}
+        <div
+          ref={headRef}
+          className="absolute top-0 left-0 w-[70px] h-[95px] bg-[#f43f5e] -translate-x-1/2 -translate-y-1/2 transform-gpu"
           style={{
-            scale: textScale,
-            opacity: textOpacity,
-            y: textY,
-            transformOrigin: "bottom left",
-            transform: "translateZ(60px)",
+            borderRadius: "50% 50% 45% 45% / 60% 60% 40% 40%",
+            willChange: "transform",
           }}
-          className="will-change-transform"
-        >
-          <h1 className="font-display max-w-5xl leading-[0.95] tracking-tight text-paper">
-            <span className="flex flex-wrap overflow-hidden py-1">
-              {"MAGRHEA.".split("").map((char, i) => (
-                <motion.span
-                  key={i}
-                  variants={titleLetterVariants}
-                  className="inline-block text-[clamp(2.75rem,14vw,6.5rem)] font-bold uppercase md:text-[8.5vw]"
-                >
-                  {char}
-                </motion.span>
-              ))}
-            </span>
-            
-            <span className="mt-4 block overflow-hidden">
-              <motion.span
-                variants={fadeUpVariants}
-                className="inline-block text-[5.5vw] font-light tracking-tight text-paper/90 md:text-[2.6vw]"
-              >
-                Unforgettably <em className="serif font-serif italic text-ink/100">unseen</em>.
-              </motion.span>
-            </span>
-          </h1>
-        </motion.div>
+        />
 
-        <motion.p
-          variants={fadeUpVariants}
-          className="mt-8 max-w-md text-base md:text-[17px] leading-relaxed text-paper/70 font-normal antialiased"
-          style={{ transform: "translateZ(40px)" }}
-        >
-          Magrhea is an independent studio building brands, digital products
-          and motion for founders who&apos;d rather be understood than liked.
-        </motion.p>
-
-        <motion.div
-          variants={fadeUpVariants}
-          className="mt-12 flex flex-wrap items-center gap-6"
-          style={{ transform: "translateZ(50px)" }}
-        >
-          <Magnetic strength={0.25}>
-            <a
-              href="#contact"
-              data-cursor-hover
-              className="group inline-flex items-center gap-3 rounded-full bg-ink px-7 py-4 font-mono text-[13px] uppercase tracking-[0.06em] text-paper transition-all duration-500 hover:bg-ink/90"
-            >
-              Start a project 
-              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
-            </a>
-          </Magnetic>
-          
-          <a
-            href="#work"
-            data-cursor-hover
-            className="relative border-b border-ink/10 pb-2 font-mono text-[13px] uppercase tracking-[0.06em] text-ink/50 transition-all duration-300 hover:border-ink hover:text-ink"
-          >
-            See the work
-          </a>
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-8 right-6 z-10 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.15em] text-ink/40 md:right-10 pointer-events-none"
-      >
-        <div className="relative h-10 w-px overflow-hidden bg-ink/10">
-          <motion.span 
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{ duration: 2, repeat: Infinity, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute inset-x-0 h-1/2 w-full bg-ink/60"
+        {/* Tapered Trailing Tail Segments */}
+        {[
+          { size: 52, color: "bg-[#f43f5e]" },
+          { size: 42, color: "bg-[#f43f5e]" },
+          { size: 34, color: "bg-[#f43f5e]" },
+          { size: 26, color: "bg-[#f43f5e]" },
+          { size: 20, color: "bg-[#f43f5e]" },
+          { size: 14, color: "bg-[#f43f5e]" },
+          { size: 8, color: "bg-[#f43f5e]" },
+        ].map((segment, idx) => (
+          <div
+            key={idx}
+            ref={(el) => {
+              tailSegmentRefs.current[idx] = el;
+            }}
+            className={`absolute top-0 left-0 rounded-full ${segment.color} -translate-x-1/2 -translate-y-1/2 transform-gpu`}
+            style={{
+              width: `${segment.size}px`,
+              height: `${segment.size}px`,
+              willChange: "transform",
+            }}
           />
-        </div>
-        Scroll
-      </motion.div>
+        ))}
+      </div>
+
+      {/* --- Dynamic Wavy Canvas Dot Grid (z-10) --- */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 pointer-events-none z-10 opacity-90"
+      />
+
+      {/* --- Soft Radial Edge Vignette --- */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_40%,#e3ded8_100%)] z-10" />
+
+      {/* --- Main Hero Typography Content Stack --- */}
+      <main className="relative z-20 flex flex-col items-center justify-center text-center max-w-6xl mx-auto py-12 pointer-events-auto">
+        <p className="font-mono text-xs sm:text-sm md:text-base tracking-[0.25em] text-[#2B1B17]/70 font-semibold uppercase mb-8 md:mb-10">
+          1X WEBBY AWARD &nbsp;·&nbsp; 5X FWA &nbsp;·&nbsp; 18X AWWWARDS &nbsp;·&nbsp; 21X CSSDA
+        </p>
+
+        <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[125px] font-medium leading-[0.90] tracking-tight text-[#2B1B17] max-w-5xl">
+          Creative development team for agencies that can&apos;t afford to miss
+        </h1>
+      </main>
     </section>
   );
 }

@@ -10,8 +10,8 @@
   --color-ink: var(--color-ink);
   --color-paper: var(--color-paper);
   --color-bone: var(--color-bone);
-  --font-display: var(--font-fraunces);
-  --font-sans: var(--font-inter);
+  --font-display: var(--font-lexend-deca);
+  --font-sans: var(--font-lexend-deca);
   --font-mono: var(--font-jetbrains-mono);
 }
 

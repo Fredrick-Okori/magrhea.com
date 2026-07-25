@@ -1,22 +1,15 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Lexend_Deca, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Cursor from "@/components/Cursor";
 import GrainOverlay from "@/components/GrainOverlay";
 import SmoothScroll from "@/components/SmoothScroll";
 import MouseTracker from "@/components/MouseTracker"; // Import the high-performance tracker wrapper
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const lexendDeca = Lexend_Deca({
+  variable: "--font-lexend-deca",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  style: ["normal", "italic"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -39,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${inter.variable} ${jetbrainsMono.variable} h-full antialiased custom-cursor-active`}
+      className={`${lexendDeca.variable} ${jetbrainsMono.variable} h-full antialiased custom-cursor-active`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         {/* Injects raw document properties to sync Hero and Cursor instantly */}

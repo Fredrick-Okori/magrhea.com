@@ -13,6 +13,7 @@ import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 import ShowcaseSection from "@/components/ShowCaseSection";
 import StartProjectSection from "@/components/StartProjectSection";
+import ContactFormCard from "@/components/contactForm";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
             <Hero />
             {/* <Clients /> */}
             <Philosophy />
+          
             <ShowcaseSection/>
             <Shape />
          

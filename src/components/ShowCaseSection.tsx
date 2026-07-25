@@ -273,7 +273,7 @@ export default function ShowcaseSection() {
               <Image src="/img/mouse_follower_converted.avif" alt="" fill sizes="320px" className="object-cover rounded-full filter blur-[12px]" />
             </div>
 
-            <span className="relative z-10 font-serif text-[6rem] leading-[0] tracking-tight text-paper/20 select-none block h-0 mt-4 -ml-2">“</span>
+            <span className="relative z-10 font-display text-[6rem] leading-[0] tracking-tight text-paper/20 select-none block h-0 mt-4 -ml-2">“</span>
             
             <div className="relative z-10 flex-1 flex items-center max-w-md mt-6">
               <p className="font-display text-[clamp(1.6rem,2.8vw,2.4rem)] font-normal leading-[1.1] tracking-tight text-[#e5e5e5] antialiased">
