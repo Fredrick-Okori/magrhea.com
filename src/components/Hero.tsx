@@ -359,9 +359,7 @@ export default function HeroSection() {
 
       {/* --- Main Hero Typography Content Stack --- */}
       <main className="relative z-20 flex flex-col items-center justify-center text-center max-w-6xl mx-auto py-12 pointer-events-auto">
-        <p className="font-mono text-xs sm:text-sm md:text-base tracking-[0.25em] text-[#2B1B17]/70 font-semibold uppercase mb-8 md:mb-10">
-          1X WEBBY AWARD &nbsp;·&nbsp; 5X FWA &nbsp;·&nbsp; 18X AWWWARDS &nbsp;·&nbsp; 21X CSSDA
-        </p>
+       
 
         <h1 className="font-display text-6xl sm:text-8xl md:text-9xl lg:text-[125px] font-medium leading-[0.90] tracking-tight text-[#2B1B17] max-w-5xl">
           Creative development team for agencies that can&apos;t afford to miss

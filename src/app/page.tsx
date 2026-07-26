@@ -24,17 +24,17 @@ export default function Home() {
             <Hero />
             {/* <Clients /> */}
             <Philosophy />
-          
-            <ShowcaseSection/>
+
+            <ShowcaseSection />
             <Shape />
-         
+
             <Work />
             {/* <Gallery />
             <Testimonial /> */}
             <ProcessSection />
 
             <FAQ />
-            <StartProjectSection/>
+            <StartProjectSection />
           </main>
           <Footer />
         </div>
